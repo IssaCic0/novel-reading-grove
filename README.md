@@ -65,29 +65,59 @@
 
 - Node.js 16.x 或更高版本
 - npm 7.x 或更高版本
+- Git
 
 ### 安装步骤
 
-1. 克隆仓库
-\`\`\`bash
+1. 克隆仓库并进入项目目录
+```bash
+# 克隆项目
 git clone https://github.com/your-username/novel-reading-grove.git
-cd novel-reading-grove
-\`\`\`
 
-2. 安装依赖
-\`\`\`bash
+# 进入项目目录
+cd novel-reading-grove
+```
+
+2. 安装项目依赖
+```bash
+# 使用 npm 安装依赖
 npm install
-\`\`\`
+```
 
 3. 启动开发服务器
-\`\`\`bash
+```bash
+# 启动开发环境
 npm run dev
-\`\`\`
+```
+启动成功后，在浏览器中访问 http://localhost:8080 即可看到项目运行效果
 
-4. 构建生产版本
-\`\`\`bash
+4. 构建生产版本（可选）
+```bash
+# 构建生产环境版本
 npm run build
-\`\`\`
+```
+构建完成后，生成的文件将位于 `dist` 目录中
+
+### 常见问题
+
+如果在安装过程中遇到问题，请尝试以下解决方案：
+
+1. 确保 Node.js 和 npm 版本符合要求
+```bash
+# 检查 Node.js 版本
+node --version
+
+# 检查 npm 版本
+npm --version
+```
+
+2. 如果依赖安装失败，尝试清除 npm 缓存
+```bash
+npm cache clean --force
+npm install
+```
+
+3. 如果启动开发服务器时端口被占用，可以修改 `vite.config.ts` 中的端口配置
 
 ## 📖 使用指南
 
@@ -105,20 +135,72 @@ npm run build
 
 ## 🎨 自定义主题
 
-项目使用 TailwindCSS 进行样式管理，支持深色模式和自定义主题：
+项目使用 TailwindCSS 进行样式管理，支持深色模式和自定义主题。您可以通过修改 `index.css` 文件来自定义主题：
 
-\`\`\`css
-/* 修改主题色 */
-:root {
-  --primary: 221.2 83% 53.3%;
-  --secondary: 210 40% 96.1%;
-  --accent: 210 40% 96.1%;
+```css
+@layer base {
+  :root {
+    /* 主题色 */
+    --primary: 221.2 83% 53.3%;    /* 主色调 */
+    --secondary: 210 40% 96.1%;    /* 次要色调 */
+    --accent: 210 40% 96.1%;       /* 强调色 */
+    
+    /* 背景和前景色 */
+    --background: 210 40% 98%;     /* 背景色 */
+    --foreground: 222.2 84% 4.9%;  /* 前景色 */
+    
+    /* 卡片样式 */
+    --card: 0 0% 100%;             /* 卡片背景 */
+    --card-foreground: 222.2 84% 4.9%;
+    
+    /* 弹出层样式 */
+    --popover: 0 0% 100%;          /* 弹出层背景 */
+    --popover-foreground: 222.2 84% 4.9%;
+    
+    /* 边框和输入框 */
+    --border: 214.3 31.8% 91.4%;   /* 边框颜色 */
+    --input: 214.3 31.8% 91.4%;    /* 输入框颜色 */
+    
+    /* 圆角 */
+    --radius: 0.75rem;             /* 默认圆角大小 */
+  }
+
+  /* 深色模式 */
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    /* 其他深色模式配色... */
+  }
 }
 
 /* 自定义字体 */
---font-sans: 'Noto Sans SC', sans-serif;
---font-serif: 'Noto Serif SC', serif;
-\`\`\`
+@layer base {
+  :root {
+    --font-sans: 'Noto Sans SC', system-ui, sans-serif;    /* 无衬线字体 */
+    --font-serif: 'Noto Serif SC', Georgia, serif;         /* 衬线字体 */
+  }
+}
+
+### 主题定制说明
+
+1. **颜色系统**
+   - 使用 HSL 颜色格式（色相、饱和度、亮度）
+   - 支持亮色和暗色两种模式
+   - 可以通过修改 CSS 变量快速更换主题
+
+2. **字体系统**
+   - 默认使用思源黑体和思源宋体
+   - 支持自定义字体族
+   - 包含优雅的降级方案
+
+3. **响应式设计**
+   - 支持根据屏幕尺寸自动调整
+   - 可以针对不同设备定制样式
+
+4. **组件主题**
+   - 所有组件样式都基于主题变量
+   - 支持全局统一更换主题
+   - 可以针对单个组件覆盖样式
 
 ## 🤝 贡献指南
 
