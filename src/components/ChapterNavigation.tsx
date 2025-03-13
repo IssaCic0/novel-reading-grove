@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, ListOrdered, Home } from 'lucide-react';
 import { toast } from 'sonner';
+import ReadingSettings from './ReadingSettings';
 
 interface ChapterNavigationProps {
   novelId: number;
@@ -12,6 +13,8 @@ interface ChapterNavigationProps {
   nextChapterId?: number;
   totalChapters: number;
   currentChapterIndex: number;
+  onFontSizeChange: (size: number) => void;
+  fontSize: number;
 }
 
 const ChapterNavigation: React.FC<ChapterNavigationProps> = ({
@@ -21,6 +24,8 @@ const ChapterNavigation: React.FC<ChapterNavigationProps> = ({
   nextChapterId,
   totalChapters,
   currentChapterIndex,
+  onFontSizeChange,
+  fontSize,
 }) => {
   const handleSaveProgress = () => {
     // In a real app, this would save to backend/localStorage
@@ -43,8 +48,15 @@ const ChapterNavigation: React.FC<ChapterNavigationProps> = ({
         </Button>
       </div>
       
-      <div className="text-sm text-muted-foreground">
-        {currentChapterIndex + 1} / {totalChapters}
+      <div className="flex items-center gap-2">
+        <div className="text-sm text-muted-foreground mr-2">
+          {currentChapterIndex + 1} / {totalChapters}
+        </div>
+        
+        <ReadingSettings 
+          onFontSizeChange={onFontSizeChange}
+          fontSize={fontSize}
+        />
       </div>
       
       <div className="flex items-center gap-2">
