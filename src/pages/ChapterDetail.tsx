@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Settings, Home, Menu, ArrowUp } from 'lucide-react';
@@ -13,7 +12,6 @@ import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/co
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 
-// 假数据
 const novelsData = {
   1: { id: 1, title: '斗破苍穹', author: '天蚕土豆' },
   2: { id: 2, title: '盗墓笔记', author: '南派三叔' },
@@ -27,7 +25,7 @@ const chaptersData = {
   ],
   2: [
     { id: 3, title: '第一章 吴邪的探险', novelId: 2, content: '吴邪在一次偶然的机会中得到了战国帛书，开始了他的探险之旅。\n\n吴邪翻看着祖父留下的笔记，上面记载着无数神秘的墓葬和宝藏。作为一个古董店老板，他对这些早已司空见惯，但这一次，不知为何，他感到一阵莫名的悸动。\n\n"三叔，我决定去了。"吴邪对电话那头的三叔说道。\n\n"小邪，你确定吗？那地方可不简单。"三叔的声音充满担忧。\n\n"我想知道爷爷到底在寻找什么，为什么会突然失踪。"吴邪坚定地说。\n\n挂断电话，吴邪将那张据说是战国时期的帛书小心翼翼地收好。帛书上绘制的地图将引领他前往一个未知的世界，一个充满危险但也可能蕴藏着真相的世界。', order: 1 },
-    { id: 4, title: '第二章 古墓的秘密', novelId: 2, content: '在古墓中，吴邪和他的伙伴们揭开了隐藏已久的秘密。\n\n"这里就是帛书上标记的位置了。"吴邪站在一片荒芜的山地前，对身旁的胖子说道。\n\n"看不出有什么特别的啊，老吴。"胖子挠了挠头。\n\n就在这时，一个冷峻的声音从身后传来："墓道入口在那块石头下面。"\n\n吴邪和胖子转身，看到一个身穿黑衣，面容冷峻的年轻人站在不远处。\n\n"你是谁？"吴邪警惕地问道。\n\n"张起灵。"黑衣人简短地回答，然后径直走向那块看似普通的大石头。\n\n在张起灵的带领下，三人找到了墓道入口，开始了地下探险。洞内钟乳石密布，空气阴冷潮湿，墙壁上刻满了奇怪的符号和壁画。\n\n"这些...好像是记载某种仪式的。"吴邪仔细研究着壁画，脸色逐渐变得凝重，"不对劲，这墓里可能有我们想象不到的东西..."', order: 2 },
+    { id: 4, title: '第二章 古墓的秘密', novelId: 2, content: '在古墓中，吴邪和他的伙伴们揭开了隐藏已久的秘密。\n\n"这里就是帛书上标记的位置了。"吴邪站在一片荒芜的山地前，对身旁的胖子说道。\n\n"看不出有什么特别的啊，老吴。"胖子挠了挠头。\n\n就在这时，一个冷峻的声音从身后传来："墓道入口在那块石头下面。"\n\n吴邪和胖子转身，看到一个身穿黑衣，面容冷峻的年轻人站在不远处。\n\n"你是谁？"吴邪警惕地问道。\n\n"张起灵。"黑衣人简短地回答，然后径直走向那块看似普通的大石头。\n\n在张起灵的带领下，三人找到了墓道入口，开��了地下探险。洞内钟乳石密布，空气阴冷潮湿，墙壁上刻满了奇怪的符号和壁画。\n\n"这些...好像是记载某种仪式的。"吴邪仔细研究着壁画，脸色逐渐变得凝重，"不对劲，这墓里可能有我们想象不到的东西..."', order: 2 },
   ],
   3: [
     { id: 5, title: '第一章 大学时光', novelId: 3, content: '赵默笙与何以琛的相遇，开启了一段美好的大学时光。\n\n北京城的秋天，金桂飘香。C大校园里，法学院的新生赵默笙正匆匆赶往教室，不料在拐角处与一个男生撞了个满怀。\n\n"对不起！"赵默笙连忙道歉，抬头却见到了一张令她瞬间失神的面容。\n\n男生淡淡点头，拾起散落的书本递给她，然后转身离去。赵默笙站在原地，心跳莫名加速。\n\n后来她才知道，那个男生名叫何以琛，是法学院公认的才子，冷静自持，成绩优异，是多少女生心中的白马王子。\n\n"默笙，你不会也对何以琛有意思吧？"室友打趣道。\n\n赵默笙笑而不答，但心中早已种下了一颗悸动的种子。她开始有意无意地出现在何以琛可能出现的地方，图书馆、自习室、法学讲座...\n\n她不知道的是，命运已经悄悄为他们编织了一张网，将两颗年轻的心紧紧相连。', order: 1 },
@@ -50,13 +48,11 @@ const ChapterDetail: React.FC = () => {
   
   const navigate = useNavigate();
   
-  // 获取当前章节的索引和前后章节
   const currentIndex = chapters.findIndex(c => c.id === cId);
   const prevChapter = currentIndex > 0 ? chapters[currentIndex - 1] : null;
   const nextChapter = currentIndex < chapters.length - 1 ? chapters[currentIndex + 1] : null;
   
   useEffect(() => {
-    // 模拟API请求
     setIsLoading(true);
     
     setTimeout(() => {
@@ -68,14 +64,12 @@ const ChapterDetail: React.FC = () => {
       
       setIsLoading(false);
       
-      // 自动保存阅读记录
       if (currentChapter) {
         console.log(`保存阅读记录: 小说ID=${nId}, 章节ID=${cId}`);
         // 这里假设是进行API调用保存阅读记录
       }
     }, 800);
     
-    // 监听滚动以显示/隐藏回到顶部按钮
     const handleScroll = () => {
       setShowBackToTop(window.scrollY > 300);
     };
@@ -120,7 +114,6 @@ const ChapterDetail: React.FC = () => {
     );
   }
 
-  // 根据主题设置样式
   const themeStyles = {
     light: 'bg-white text-gray-800',
     sepia: 'bg-[#f8f2e4] text-[#5f4b32]',
@@ -129,7 +122,6 @@ const ChapterDetail: React.FC = () => {
   
   return (
     <div className={`min-h-screen ${themeStyles[theme]}`}>
-      {/* 顶部导航 */}
       <header className={`sticky top-0 z-50 border-b ${theme === 'light' ? 'bg-white border-gray-200' : theme === 'sepia' ? 'bg-[#f8f2e4] border-[#e2d9c8]' : 'bg-[#1a1a1a] border-[#333]'} backdrop-blur-sm`}>
         <div className="container flex h-14 items-center justify-between">
           <div className="flex items-center gap-2">
@@ -201,7 +193,6 @@ const ChapterDetail: React.FC = () => {
         </div>
       </header>
       
-      {/* 章节内容 */}
       <div className="reading-container max-w-3xl mx-auto px-4 py-8">
         <motion.div
           initial={{ opacity: 0 }}
@@ -218,7 +209,7 @@ const ChapterDetail: React.FC = () => {
           </div>
           
           <div 
-            className="chapter-content"
+            className="prose prose-lg max-w-none mx-auto"
             style={{ 
               fontSize: `${fontSize}px`,
               color: theme === 'light' ? '#333' : theme === 'sepia' ? '#5f4b32' : '#e0e0e0'
@@ -230,7 +221,6 @@ const ChapterDetail: React.FC = () => {
           </div>
         </motion.div>
         
-        {/* 章节导航 */}
         <div className="mt-12 flex justify-between">
           <Button
             variant="outline"
@@ -254,7 +244,6 @@ const ChapterDetail: React.FC = () => {
         </div>
       </div>
       
-      {/* 回到顶部按钮 */}
       {showBackToTop && (
         <button
           className={`fixed bottom-6 right-6 p-3 rounded-full shadow-md ${theme === 'light' ? 'bg-white text-gray-800' : theme === 'sepia' ? 'bg-[#f8f2e4] text-[#5f4b32]' : 'bg-[#333] text-[#e0e0e0]'} hover:opacity-90 transition-all`}
