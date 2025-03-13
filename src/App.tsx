@@ -20,6 +20,11 @@ import LatestUpdates from "./pages/LatestUpdates";
 // 管理员页面导入
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import Novels from "./pages/admin/Novels";
+import Chapters from "./pages/admin/Chapters";
+import Users from "./pages/admin/Users";
+import Comments from "./pages/admin/Comments";
+import Settings from "./pages/admin/Settings";
 
 const queryClient = new QueryClient();
 
@@ -44,7 +49,11 @@ const App = () => (
             {/* 管理员后台路由 */}
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
-            <Route path="/admin/*" element={<AdminDashboard />} />
+            <Route path="/admin/novels" element={<Novels />} />
+            <Route path="/admin/chapters" element={<Chapters />} />
+            <Route path="/admin/users" element={<Users />} />
+            <Route path="/admin/comments" element={<Comments />} />
+            <Route path="/admin/settings" element={<Settings />} />
             
             {/* 404页面 */}
             <Route path="*" element={<NotFound />} />
