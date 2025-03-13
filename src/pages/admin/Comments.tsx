@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { 
   Card, 
@@ -41,10 +41,26 @@ import {
   BookOpen,
   User,
   ThumbsUp,
-  Clock
+  Clock,
+  Filter,
+  CalendarIcon,
+  RefreshCw
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from "@/components/ui/badge";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogDescription, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogFooter,
+  DialogClose
+} from "@/components/ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
+import { zhCN } from "date-fns/locale";
 
 // Mock data for comments
 const commentsData = [
@@ -68,40 +84,83 @@ const Comments: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [novelFilter, setNovelFilter] = useState('all');
+  const [userFilter, setUserFilter] = useState('all');
+  const [dateFilter, setDateFilter] = useState<Date | undefined>(undefined);
+  const [viewComment, setViewComment] = useState<any>(null);
+  const [showViewDialog, setShowViewDialog] = useState(false);
   
-  // Handle search function
-  const handleSearch = () => {
-    let filtered = commentsData;
+  // 所有用户
+  const users = Array.from(new Set(commentsData.map(comment => comment.username)))
+    .map(username => {
+      const user = commentsData.find(comment => comment.username === username);
+      return { id: user?.userId, username };
+    });
+  
+  // 处理筛选
+  const handleFilter = () => {
+    setIsLoading(true);
     
-    // Filter by novel
-    if (novelFilter !== 'all') {
-      filtered = filtered.filter(comment => 
-        comment.novelId === parseInt(novelFilter)
-      );
-    }
-    
-    // Filter by search term
-    if (searchTerm.trim() !== '') {
-      filtered = filtered.filter(comment => 
-        comment.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        comment.username.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-    
-    setComments(filtered);
+    setTimeout(() => {
+      let filtered = [...commentsData];
+      
+      // 按小说筛选
+      if (novelFilter !== 'all') {
+        filtered = filtered.filter(comment => 
+          comment.novelId === parseInt(novelFilter)
+        );
+      }
+      
+      // 按用户筛选
+      if (userFilter !== 'all') {
+        filtered = filtered.filter(comment => 
+          comment.userId === parseInt(userFilter)
+        );
+      }
+      
+      // 按日期筛选
+      if (dateFilter) {
+        const filterDate = format(dateFilter, 'yyyy-MM-dd');
+        filtered = filtered.filter(comment => 
+          comment.createTime.startsWith(filterDate)
+        );
+      }
+      
+      // 按搜索词筛选
+      if (searchTerm.trim() !== '') {
+        filtered = filtered.filter(comment => 
+          comment.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          comment.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          comment.novelTitle.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      }
+      
+      setComments(filtered);
+      setIsLoading(false);
+    }, 600);
   };
   
-  // Handle view comment details (not implemented in this demo)
+  // 重置筛选
+  const resetFilters = () => {
+    setNovelFilter('all');
+    setUserFilter('all');
+    setDateFilter(undefined);
+    setSearchTerm('');
+    setComments(commentsData);
+  };
+  
+  // 查看评论详情
   const handleViewComment = (id: number) => {
-    toast.info(`查看评论ID: ${id}的详情`);
+    const comment = comments.find(c => c.id === id);
+    setViewComment(comment);
+    setShowViewDialog(true);
   };
   
-  // Handle delete comment
+  // 删除评论
   const handleDeleteComment = (id: number) => {
     if (confirm('确定要删除这条评论吗？此操作不可撤销。')) {
       setIsLoading(true);
       
-      // Simulate API call
+      // 模拟API调用
       setTimeout(() => {
         setComments(comments.filter(comment => comment.id !== id));
         setIsLoading(false);
@@ -109,6 +168,11 @@ const Comments: React.FC = () => {
       }, 800);
     }
   };
+  
+  // 批量执行过滤
+  useEffect(() => {
+    handleFilter();
+  }, []);
   
   return (
     <AdminLayout>
@@ -125,12 +189,12 @@ const Comments: React.FC = () => {
             <CardTitle>评论列表</CardTitle>
             <CardDescription>管理用户对小说和章节的评论</CardDescription>
             
-            <div className="flex mt-4 gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:flex gap-4 mt-4">
               <Select
                 value={novelFilter}
                 onValueChange={setNovelFilter}
               >
-                <SelectTrigger className="w-[200px]">
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="按小说筛选" />
                 </SelectTrigger>
                 <SelectContent>
@@ -143,6 +207,44 @@ const Comments: React.FC = () => {
                 </SelectContent>
               </Select>
               
+              <Select
+                value={userFilter}
+                onValueChange={setUserFilter}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="按用户筛选" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">所有用户</SelectItem>
+                  {users.map((user) => (
+                    <SelectItem key={user.id} value={user.id?.toString() || ''}>
+                      {user.username}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={`w-full justify-start text-left font-normal ${!dateFilter ? 'text-muted-foreground' : ''}`}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {dateFilter ? format(dateFilter, 'yyyy-MM-dd') : '按日期筛选'}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={dateFilter}
+                    onSelect={setDateFilter}
+                    locale={zhCN}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+              
               <div className="relative flex-1">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -151,10 +253,19 @@ const Comments: React.FC = () => {
                   className="pl-8"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                  onKeyDown={(e) => e.key === 'Enter' && handleFilter()}
                 />
               </div>
-              <Button variant="outline" onClick={handleSearch}>搜索</Button>
+              
+              <Button onClick={handleFilter} className="gap-2">
+                <Filter className="h-4 w-4" />
+                筛选
+              </Button>
+              
+              <Button variant="outline" onClick={resetFilters} className="gap-2">
+                <RefreshCw className="h-4 w-4" />
+                重置
+              </Button>
             </div>
           </CardHeader>
           <CardContent>
@@ -252,6 +363,72 @@ const Comments: React.FC = () => {
             )}
           </CardContent>
         </Card>
+        
+        {/* 查看评论详情的对话框 */}
+        <Dialog open={showViewDialog} onOpenChange={setShowViewDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>评论详情</DialogTitle>
+              <DialogDescription>
+                查看评论的完整信息
+              </DialogDescription>
+            </DialogHeader>
+            
+            {viewComment && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">小说</p>
+                    <p>{viewComment.novelTitle}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">章节</p>
+                    <p>{viewComment.chapterTitle}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">用户</p>
+                    <p>{viewComment.username}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">时间</p>
+                    <p>{viewComment.createTime}</p>
+                  </div>
+                </div>
+                
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground mb-2">评论内容</p>
+                  <div className="p-3 bg-muted rounded-md">
+                    {viewComment.content}
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <ThumbsUp className="h-4 w-4 text-muted-foreground" />
+                    <span>{viewComment.likeCount} 点赞</span>
+                  </div>
+                  <Badge>ID: {viewComment.id}</Badge>
+                </div>
+              </div>
+            )}
+            
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="secondary">关闭</Button>
+              </DialogClose>
+              <Button 
+                variant="destructive" 
+                onClick={() => {
+                  setShowViewDialog(false);
+                  if (viewComment) handleDeleteComment(viewComment.id);
+                }}
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                删除评论
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </AdminLayout>
   );

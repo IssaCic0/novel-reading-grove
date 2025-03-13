@@ -1,24 +1,33 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import PageLayout from '@/components/PageLayout';
 import { Button } from '@/components/ui/button';
 import { 
   Bookmark, 
-  Share2, 
   Star, 
   MessageSquare, 
   Clock, 
   User, 
   BookOpen, 
-  Calendar 
+  Calendar,
+  Send
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { motion } from 'framer-motion';
+import ShareButton from '@/components/ShareButton';
+import { Textarea } from '@/components/ui/textarea';
+import { toast } from 'sonner';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
-// 假数据
 const novelsData = {
   1: {
     id: 1,
@@ -102,9 +111,11 @@ const NovelDetail: React.FC = () => {
   const [comments, setComments] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [collected, setCollected] = useState(false);
+  const [newComment, setNewComment] = useState('');
+  const [commentPage, setCommentPage] = useState(1);
+  const commentsPerPage = 5;
 
   useEffect(() => {
-    // 模拟API请求
     setIsLoading(true);
     
     setTimeout(() => {
@@ -130,18 +141,44 @@ const NovelDetail: React.FC = () => {
 
   const toggleCollection = () => {
     setCollected(!collected);
+    toast.success(collected ? '已取消收藏' : '已加入书架');
   };
+  
+  const handleSubmitComment = () => {
+    if (!newComment.trim()) {
+      toast.error('评论内容不能为空');
+      return;
+    }
+    
+    const newCommentObj = {
+      id: Date.now(),
+      username: '当前用户',
+      content: newComment,
+      createTime: new Date().toISOString(),
+      likeCount: 0
+    };
+    
+    setComments([newCommentObj, ...comments]);
+    setNewComment('');
+    toast.success('评论已发布');
+  };
+  
+  const paginatedComments = comments.slice(
+    (commentPage - 1) * commentsPerPage,
+    commentPage * commentsPerPage
+  );
+  
+  const totalPages = Math.ceil(comments.length / commentsPerPage);
 
   return (
     <PageLayout>
       <div className="container py-8">
         <motion.div 
-          className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden"
+          className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          {/* 小说基本信息 */}
           <div className="p-6 md:p-8 flex flex-col md:flex-row gap-6">
             <div className="w-full md:w-48 lg:w-56 flex-shrink-0">
               <div className="relative aspect-[3/4] overflow-hidden rounded-md shadow-sm">
@@ -163,10 +200,7 @@ const NovelDetail: React.FC = () => {
                   <Bookmark className={`h-4 w-4 ${collected ? 'fill-current' : ''}`} />
                   {collected ? '已收藏' : '加入书架'}
                 </Button>
-                <Button variant="outline" className="w-full gap-2">
-                  <Share2 className="h-4 w-4" />
-                  分享
-                </Button>
+                <ShareButton title={novel.title} variant="outline" />
               </div>
             </div>
             
@@ -211,17 +245,17 @@ const NovelDetail: React.FC = () => {
               </div>
               
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
-                <div className="bg-novel-secondary/60 rounded-md p-3 text-center">
+                <div className="bg-novel-secondary/60 dark:bg-gray-700/60 rounded-md p-3 text-center">
                   <div className="text-sm text-muted-foreground">总字数</div>
                   <div className="text-xl font-semibold mt-1">54,321</div>
                 </div>
-                <div className="bg-novel-secondary/60 rounded-md p-3 text-center">
+                <div className="bg-novel-secondary/60 dark:bg-gray-700/60 rounded-md p-3 text-center">
                   <div className="text-sm text-muted-foreground">创建时间</div>
                   <div className="text-base font-medium mt-1">
                     {new Date(novel.createTime).toLocaleDateString('zh-CN')}
                   </div>
                 </div>
-                <div className="bg-novel-secondary/60 rounded-md p-3 text-center">
+                <div className="bg-novel-secondary/60 dark:bg-gray-700/60 rounded-md p-3 text-center">
                   <div className="text-sm text-muted-foreground">阅读量</div>
                   <div className="text-xl font-semibold mt-1">{novel.views.toLocaleString()}</div>
                 </div>
@@ -231,7 +265,6 @@ const NovelDetail: React.FC = () => {
           
           <Separator />
           
-          {/* 章节和评论 */}
           <div className="p-6">
             <Tabs defaultValue="chapters">
               <TabsList className="w-full md:w-auto">
@@ -245,7 +278,7 @@ const NovelDetail: React.FC = () => {
                     <Link 
                       key={chapter.id}
                       to={`/novel/${novel.id}/chapter/${chapter.id}`}
-                      className="flex items-center justify-between p-3 rounded-md hover:bg-novel-secondary/60 transition-colors"
+                      className="flex items-center justify-between p-3 rounded-md hover:bg-novel-secondary/60 dark:hover:bg-gray-700/60 transition-colors"
                     >
                       <span className="font-medium">{chapter.title}</span>
                       <span className="text-sm text-muted-foreground">
@@ -257,39 +290,104 @@ const NovelDetail: React.FC = () => {
               </TabsContent>
               
               <TabsContent value="comments" className="mt-6">
+                <div className="mb-6 p-4 bg-novel-secondary/30 dark:bg-gray-700/30 rounded-lg">
+                  <h3 className="font-medium mb-3">发表评论</h3>
+                  <Textarea 
+                    placeholder="分享你的想法..." 
+                    className="mb-3" 
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                  />
+                  <div className="flex justify-end">
+                    <Button onClick={handleSubmitComment}>
+                      <Send className="mr-2 h-4 w-4" />
+                      发布评论
+                    </Button>
+                  </div>
+                </div>
+                
                 <div className="flex flex-col gap-4">
-                  {comments.map((comment) => (
-                    <motion.div 
-                      key={comment.id}
-                      className="bg-novel-secondary/30 rounded-lg p-4"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-full bg-novel-primary/20 flex items-center justify-center text-novel-primary">
-                            {comment.username[0].toUpperCase()}
+                  {paginatedComments.length > 0 ? (
+                    paginatedComments.map((comment) => (
+                      <motion.div 
+                        key={comment.id}
+                        className="bg-novel-secondary/30 dark:bg-gray-700/30 rounded-lg p-4"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className="w-8 h-8 rounded-full bg-novel-primary/20 flex items-center justify-center text-novel-primary">
+                              {comment.username[0].toUpperCase()}
+                            </div>
+                            <span className="font-medium">{comment.username}</span>
                           </div>
-                          <span className="font-medium">{comment.username}</span>
+                          <div className="text-sm text-muted-foreground">
+                            {new Date(comment.createTime).toLocaleDateString('zh-CN')}
+                          </div>
                         </div>
-                        <div className="text-sm text-muted-foreground">
-                          {new Date(comment.createTime).toLocaleDateString('zh-CN')}
+                        <p className="mt-3 text-novel-content">{comment.content}</p>
+                        <div className="mt-2 flex items-center justify-end gap-4">
+                          <button className="text-sm text-muted-foreground flex items-center gap-1 hover:text-novel-primary">
+                            <Star className="h-4 w-4" />
+                            {comment.likeCount}
+                          </button>
+                          <button className="text-sm text-muted-foreground flex items-center gap-1 hover:text-novel-primary">
+                            <MessageSquare className="h-4 w-4" />
+                            回复
+                          </button>
                         </div>
-                      </div>
-                      <p className="mt-3 text-novel-content">{comment.content}</p>
-                      <div className="mt-2 flex items-center justify-end gap-4">
-                        <button className="text-sm text-muted-foreground flex items-center gap-1 hover:text-novel-primary">
-                          <Star className="h-4 w-4" />
-                          {comment.likeCount}
-                        </button>
-                        <button className="text-sm text-muted-foreground flex items-center gap-1 hover:text-novel-primary">
-                          <MessageSquare className="h-4 w-4" />
-                          回复
-                        </button>
-                      </div>
-                    </motion.div>
-                  ))}
+                      </motion.div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                      暂无评论，来发表第一条评论吧！
+                    </div>
+                  )}
+                  
+                  {totalPages > 1 && (
+                    <Pagination className="mt-6">
+                      <PaginationContent>
+                        <PaginationItem>
+                          <PaginationPrevious 
+                            href="#" 
+                            onClick={(e) => {
+                              e.preventDefault();
+                              if (commentPage > 1) setCommentPage(commentPage - 1);
+                            }}
+                            className={commentPage <= 1 ? "pointer-events-none opacity-50" : ""}
+                          />
+                        </PaginationItem>
+                        
+                        {Array.from({ length: totalPages }).map((_, index) => (
+                          <PaginationItem key={index}>
+                            <PaginationLink 
+                              href="#" 
+                              isActive={commentPage === index + 1}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setCommentPage(index + 1);
+                              }}
+                            >
+                              {index + 1}
+                            </PaginationLink>
+                          </PaginationItem>
+                        ))}
+                        
+                        <PaginationItem>
+                          <PaginationNext 
+                            href="#" 
+                            onClick={(e) => {
+                              e.preventDefault();
+                              if (commentPage < totalPages) setCommentPage(commentPage + 1);
+                            }}
+                            className={commentPage >= totalPages ? "pointer-events-none opacity-50" : ""}
+                          />
+                        </PaginationItem>
+                      </PaginationContent>
+                    </Pagination>
+                  )}
                 </div>
               </TabsContent>
             </Tabs>
