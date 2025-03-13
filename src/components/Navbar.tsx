@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, User, BookOpen, Home } from "lucide-react";
+import { Search, User, BookOpen, Home, BarChart2, Clock } from "lucide-react";
 
 const Navbar: React.FC = () => {
   return (
@@ -26,10 +26,12 @@ const Navbar: React.FC = () => {
             <Link to="/categories" className="font-medium text-muted-foreground transition-colors hover:text-foreground">
               分类
             </Link>
-            <Link to="/ranking" className="font-medium text-muted-foreground transition-colors hover:text-foreground">
+            <Link to="/ranking" className="font-medium text-muted-foreground transition-colors hover:text-foreground flex items-center gap-1">
+              <BarChart2 className="h-4 w-4" />
               排行榜
             </Link>
-            <Link to="/latest" className="font-medium text-muted-foreground transition-colors hover:text-foreground">
+            <Link to="/latest" className="font-medium text-muted-foreground transition-colors hover:text-foreground flex items-center gap-1">
+              <Clock className="h-4 w-4" />
               最新更新
             </Link>
           </nav>

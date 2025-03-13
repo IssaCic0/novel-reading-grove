@@ -14,6 +14,12 @@ import ChapterDetail from "./pages/ChapterDetail";
 import Categories from "./pages/Categories";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Ranking from "./pages/Ranking";
+import LatestUpdates from "./pages/LatestUpdates";
+
+// 管理员页面导入
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 const queryClient = new QueryClient();
 
@@ -25,12 +31,22 @@ const App = () => (
       <BrowserRouter>
         <AnimatePresence mode="wait">
           <Routes>
+            {/* 用户前台路由 */}
             <Route path="/" element={<Index />} />
             <Route path="/novel/:id" element={<NovelDetail />} />
             <Route path="/novel/:novelId/chapter/:chapterId" element={<ChapterDetail />} />
             <Route path="/categories" element={<Categories />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/ranking" element={<Ranking />} />
+            <Route path="/latest" element={<LatestUpdates />} />
+            
+            {/* 管理员后台路由 */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/*" element={<AdminDashboard />} />
+            
+            {/* 404页面 */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AnimatePresence>
