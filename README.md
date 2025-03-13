@@ -1,69 +1,150 @@
-# Welcome to your Lovable project
+# 🌟 Novel Reading Grove
 
-## Project info
+<div align="center">
 
-**URL**: https://lovable.dev/projects/9b34c288-28f2-42c6-97bf-6262aa1b2cfd
+![Novel Reading Grove](https://img.shields.io/badge/Novel%20Reading%20Grove-v1.0.0-blue)
+![React](https://img.shields.io/badge/React-18.x-61dafb)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.x-38bdf8)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-## How can I edit this code?
+<p align="center">
+  <strong>🎨 现代化的小说阅读平台 | Modern Novel Reading Platform</strong>
+  <br>
+  <i>让阅读成为一种享受 | Make Reading a Pleasure</i>
+</p>
 
-There are several ways of editing your application.
+[演示 Demo](https://your-demo-link.com) · 
+[报告问题 Report Bug](https://github.com/your-repo/issues) · 
+[功能建议 Request Feature](https://github.com/your-repo/issues)
 
-**Use Lovable**
+</div>
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/9b34c288-28f2-42c6-97bf-6262aa1b2cfd) and start prompting.
+## ✨ 特性亮点
 
-Changes made via Lovable will be committed automatically to this repo.
+### 🎯 核心功能
+- 📚 **智能推荐系统**
+  - 基于用户阅读历史的个性化推荐
+  - 相似小说智能匹配
+  - 热门榜单实时更新
 
-**Use your preferred IDE**
+- 🎨 **优雅的阅读体验**
+  - 自适应阅读布局
+  - 多主题切换支持
+  - 字体大小调节
+  - 阅读进度记忆
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- 🔍 **强大的搜索功能**
+  - 模糊搜索支持
+  - 分类筛选
+  - 标签系统
+  - 高级过滤选项
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### 🛠 技术特色
 
-Follow these steps:
+- 💫 **流畅的动画效果**
+  - 页面过渡动画
+  - 卡片悬浮效果
+  - 加载动画
+  - 滚动视差
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+- 🎯 **现代化技术栈**
+  - React 18 + TypeScript
+  - TailwindCSS
+  - Framer Motion
+  - Shadcn/ui
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+- 📱 **响应式设计**
+  - 移动端优先
+  - 平板适配
+  - 桌面端优化
 
-# Step 3: Install the necessary dependencies.
-npm i
+## 🚀 快速开始
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+### 环境要求
+
+- Node.js 16.x 或更高版本
+- npm 7.x 或更高版本
+
+### 安装步骤
+
+1. 克隆仓库
+\`\`\`bash
+git clone https://github.com/your-username/novel-reading-grove.git
+cd novel-reading-grove
+\`\`\`
+
+2. 安装依赖
+\`\`\`bash
+npm install
+\`\`\`
+
+3. 启动开发服务器
+\`\`\`bash
 npm run dev
-```
+\`\`\`
 
-**Edit a file directly in GitHub**
+4. 构建生产版本
+\`\`\`bash
+npm run build
+\`\`\`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 📖 使用指南
 
-**Use GitHub Codespaces**
+### 用户功能
+- 📚 浏览和搜索小说
+- 🔖 添加书签和收藏
+- ⭐ 评分和评论
+- 📱 移动端阅读
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### 管理功能
+- 📊 数据统计和分析
+- 📝 内容管理
+- 👥 用户管理
+- 🔒 权限控制
 
-## What technologies are used for this project?
+## 🎨 自定义主题
 
-This project is built with .
+项目使用 TailwindCSS 进行样式管理，支持深色模式和自定义主题：
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+\`\`\`css
+/* 修改主题色 */
+:root {
+  --primary: 221.2 83% 53.3%;
+  --secondary: 210 40% 96.1%;
+  --accent: 210 40% 96.1%;
+}
 
-## How can I deploy this project?
+/* 自定义字体 */
+--font-sans: 'Noto Sans SC', sans-serif;
+--font-serif: 'Noto Serif SC', serif;
+\`\`\`
 
-Simply open [Lovable](https://lovable.dev/projects/9b34c288-28f2-42c6-97bf-6262aa1b2cfd) and click on Share -> Publish.
+## 🤝 贡献指南
 
-## I want to use a custom domain - is that possible?
+我们欢迎所有形式的贡献，无论是新功能、bug 修复还是文档改进。
 
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+1. Fork 项目
+2. 创建特性分支 (\`git checkout -b feature/AmazingFeature\`)
+3. 提交改动 (\`git commit -m 'Add some AmazingFeature'\`)
+4. 推送到分支 (\`git push origin feature/AmazingFeature\`)
+5. 开启 Pull Request
+
+## 📄 开源协议
+
+该项目基于 MIT 协议开源 - 查看 [LICENSE](LICENSE) 文件了解详情
+
+## 🙏 致谢
+
+- [React](https://reactjs.org/)
+- [TailwindCSS](https://tailwindcss.com/)
+- [Shadcn/ui](https://ui.shadcn.com/)
+- [Framer Motion](https://www.framer.com/motion/)
+
+---
+
+<div align="center">
+
+**Novel Reading Grove** ©2024 Created by [Your Name]
+
+</div>
