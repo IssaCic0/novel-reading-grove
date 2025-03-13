@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { 
@@ -52,6 +51,8 @@ import {
   RotateCw 
 } from 'lucide-react';
 import { toast } from 'sonner';
+import ChapterBulkImport from '@/components/admin/ChapterBulkImport';
+import RichTextEditor from '@/components/RichTextEditor';
 
 // Mock data for chapters
 const chaptersData = [
@@ -187,10 +188,19 @@ const Chapters: React.FC = () => {
             章节管理
           </h1>
           
-          <Button onClick={() => openChapterDialog()} className="flex items-center gap-1">
-            <Plus className="h-4 w-4" />
-            添加章节
-          </Button>
+          <div className="flex gap-2">
+            <ChapterBulkImport
+              novelId={parseInt(novelFilter)}
+              onImportSuccess={() => {
+                // 刷新章节列表
+                toast.success('章节列表已更新');
+              }}
+            />
+            <Button onClick={() => openChapterDialog()} className="flex items-center gap-1">
+              <Plus className="h-4 w-4" />
+              添加章节
+            </Button>
+          </div>
         </div>
         
         <Card>
@@ -303,7 +313,7 @@ const Chapters: React.FC = () => {
         
         {/* Add/Edit Chapter Dialog */}
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="sm:max-w-[700px]">
+          <DialogContent className="sm:max-w-[800px]">
             <DialogHeader>
               <DialogTitle>{editingChapter?.id ? '编辑章节' : '添加章节'}</DialogTitle>
               <DialogDescription>
@@ -354,22 +364,20 @@ const Chapters: React.FC = () => {
                 <Label htmlFor="content" className="text-right pt-2">
                   章节内容
                 </Label>
-                <Textarea
-                  id="content"
-                  placeholder="请输入章节内容"
-                  className="col-span-3"
-                  rows={10}
-                  value={editingChapter?.content || ''}
-                  onChange={(e) => setEditingChapter({...editingChapter, content: e.target.value})}
-                />
+                <div className="col-span-3">
+                  <RichTextEditor
+                    value={editingChapter?.content || ''}
+                    onChange={(content) => setEditingChapter({...editingChapter, content})}
+                  />
+                </div>
               </div>
             </div>
             
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+              <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
                 取消
               </Button>
-              <Button type="submit" onClick={handleSaveChapter} disabled={isLoading}>
+              <Button onClick={handleSaveChapter} disabled={isLoading}>
                 {isLoading ? (
                   <>
                     <RotateCw className="mr-2 h-4 w-4 animate-spin" />

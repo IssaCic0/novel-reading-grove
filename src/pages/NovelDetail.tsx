@@ -10,7 +10,12 @@ import {
   User, 
   BookOpen, 
   Calendar,
-  Send
+  Send,
+  BookmarkPlus,
+  ArrowDownAZ,
+  ArrowUpAZ,
+  ChevronRight,
+  ThumbsUp
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -27,6 +32,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import NovelRating from '@/components/NovelRating';
+import NovelRecommendations from '@/components/NovelRecommendations';
 
 const novelsData = {
   1: {
@@ -103,6 +110,55 @@ const commentsData = {
   ],
 };
 
+// 模拟相似小说数据
+const similarNovels = [
+  {
+    id: 2,
+    title: '武动乾坤',
+    author: '天蚕土豆',
+    cover_image: '/covers/2.jpg',
+    category: '玄幻',
+    rating: 4.6,
+    match_score: 0.92,
+  },
+  {
+    id: 3,
+    title: '大主宰',
+    author: '天蚕土豆',
+    cover_image: '/covers/3.jpg',
+    category: '玄幻',
+    rating: 4.5,
+    match_score: 0.90,
+  },
+  {
+    id: 4,
+    title: '元尊',
+    author: '天蚕土豆',
+    cover_image: '/covers/4.jpg',
+    category: '玄幻',
+    rating: 4.4,
+    match_score: 0.88,
+  },
+  {
+    id: 5,
+    title: '神墓',
+    author: '辰东',
+    cover_image: '/covers/5.jpg',
+    category: '玄幻',
+    rating: 4.7,
+    match_score: 0.85,
+  },
+  {
+    id: 6,
+    title: '完美世界',
+    author: '辰东',
+    cover_image: '/covers/6.jpg',
+    category: '玄幻',
+    rating: 4.8,
+    match_score: 0.83,
+  }
+];
+
 const NovelDetail: React.FC = () => {
   const { id } = useParams();
   const novelId = parseInt(id || '1');
@@ -172,12 +228,12 @@ const NovelDetail: React.FC = () => {
 
   return (
     <PageLayout>
-      <div className="container py-8">
-        <motion.div 
-          className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden"
+      <div className="container mx-auto px-4 py-8">
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
+          className="max-w-4xl mx-auto"
         >
           <div className="p-6 md:p-8 flex flex-col md:flex-row gap-6">
             <div className="w-full md:w-48 lg:w-56 flex-shrink-0">
@@ -193,6 +249,16 @@ const NovelDetail: React.FC = () => {
               </div>
               
               <div className="mt-4 flex flex-col gap-2">
+                <NovelRating
+                  novelId={novel.id}
+                  initialRating={0}
+                  totalRatings={novel.total_ratings || 0}
+                  averageRating={novel.average_rating || 0}
+                  onRatingSubmit={(rating) => {
+                    // TODO: 在实际项目中，这里应该更新小说的评分数据
+                    console.log('Rating submitted:', rating);
+                  }}
+                />
                 <Button 
                   className="w-full gap-2"
                   onClick={toggleCollection}
@@ -391,6 +457,15 @@ const NovelDetail: React.FC = () => {
                 </div>
               </TabsContent>
             </Tabs>
+          </div>
+
+          {/* 相似小说推荐 */}
+          <div className="mt-12">
+            <NovelRecommendations
+              novels={similarNovels}
+              title="相似推荐"
+              description="喜欢这本书的读者也在看"
+            />
           </div>
         </motion.div>
       </div>

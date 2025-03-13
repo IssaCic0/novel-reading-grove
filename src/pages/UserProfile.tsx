@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import PageLayout from '@/components/PageLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -7,10 +6,12 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { BookOpen, Clock, User, Settings, History, Heart, Eye } from 'lucide-react';
+import { BookOpen, Clock, User, Settings, History, Heart, Eye, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
+import { toast } from 'sonner';
+import ImageUpload from '@/components/ImageUpload';
 
 // Mock reading history data
 const readingHistory = [
@@ -32,6 +33,23 @@ const UserProfile: React.FC = () => {
     avatar: '/placeholder.svg',
     joinDate: '2025-01-15',
   });
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleAvatarUpload = (imageUrl: string) => {
+    setUser({ ...user, avatar: imageUrl });
+    // TODO: 在实际项目中，这里应该调用API保存头像URL
+  };
+
+  const handleSaveChanges = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    // 模拟API调用
+    setTimeout(() => {
+      toast.success('个人信息已更新');
+      setIsLoading(false);
+    }, 1000);
+  };
 
   return (
     <PageLayout>
@@ -176,23 +194,40 @@ const UserProfile: React.FC = () => {
                   <CardDescription>更新您的个人信息</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <form className="space-y-6">
+                  <form onSubmit={handleSaveChanges} className="space-y-6">
+                    <div className="flex justify-center mb-6">
+                      <ImageUpload
+                        onImageUpload={handleAvatarUpload}
+                        currentImage={user.avatar}
+                      />
+                    </div>
+
                     <div className="space-y-2">
                       <Label htmlFor="username">用户名</Label>
-                      <Input id="username" value={user.username} onChange={e => setUser({...user, username: e.target.value})} />
+                      <Input
+                        id="username"
+                        value={user.username}
+                        onChange={(e) =>
+                          setUser({ ...user, username: e.target.value })
+                        }
+                      />
                     </div>
                     
                     <div className="space-y-2">
                       <Label htmlFor="email">电子邮箱</Label>
-                      <Input id="email" type="email" value={user.email} onChange={e => setUser({...user, email: e.target.value})} />
+                      <Input
+                        id="email"
+                        type="email"
+                        value={user.email}
+                        onChange={(e) =>
+                          setUser({ ...user, email: e.target.value })
+                        }
+                      />
                     </div>
                     
-                    <div className="space-y-2">
-                      <Label htmlFor="avatar">头像 URL</Label>
-                      <Input id="avatar" value={user.avatar} onChange={e => setUser({...user, avatar: e.target.value})} />
-                    </div>
-                    
-                    <Button type="submit">保存更改</Button>
+                    <Button type="submit" disabled={isLoading}>
+                      {isLoading ? '保存中...' : '保存更改'}
+                    </Button>
                   </form>
                 </CardContent>
               </Card>
