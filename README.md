@@ -207,9 +207,9 @@ npm install
 我们欢迎所有形式的贡献，无论是新功能、bug 修复还是文档改进。
 
 1. Fork 项目
-2. 创建特性分支 (\`git checkout -b feature/AmazingFeature\`)
-3. 提交改动 (\`git commit -m 'Add some AmazingFeature'\`)
-4. 推送到分支 (\`git push origin feature/AmazingFeature\`)
+2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交改动 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
 5. 开启 Pull Request
 
 ## 📄 开源协议
