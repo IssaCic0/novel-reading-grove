@@ -180,6 +180,7 @@ npm install
     --font-serif: 'Noto Serif SC', Georgia, serif;         /* 衬线字体 */
   }
 }
+```
 
 ### 主题定制说明
 
